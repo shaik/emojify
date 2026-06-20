@@ -1,4 +1,34 @@
 {
   "theme": "dark",
-  "model": "sonnet"
+  "model": "sonnet",
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "description": "Real browser automation — navigate to localhost, click, screenshot emoji output at any viewport"
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "description": "Fetch web content — pull color algorithm docs, Twemoji release notes, external references during dev"
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "description": "Persistent knowledge graph across sessions — stores algorithm decisions, tuning results, design choices"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "description": "Step-by-step structured reasoning — use before implementing any algorithm or architecture decision"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub integration — inspect Actions runs, manage Pages deploy, review PRs. Set GITHUB_TOKEN env var first."
+    }
+  }
 }
