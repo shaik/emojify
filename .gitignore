@@ -1,0 +1,16 @@
+# Generated assets (built by CI, not committed)
+web/emoji_features.json
+web/emoji/
+
+# Local dev assets
+assets/
+.venv/
+
+# Dev server bookkeeping
+.server.pid
+.server.log
+
+# OS / editor noise
+.DS_Store
+.env
+*.local
