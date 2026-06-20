@@ -1,6 +1,7 @@
 // App orchestration: upload -> crop -> mosaic -> share.
 
 import { ALL_GROUP_NAMES, DEFAULT_GROUPS, buildPalette } from "../emoji-source.mjs";
+import { APP_VERSION } from "./constants.js";
 import { buildEmojiPalette } from "./palette.js";
 import { CropEditor } from "./crop.js";
 import { renderMosaic, mosaicToBlob, shareOrDownload, mosaicToText } from "./render.js";
@@ -307,4 +308,5 @@ initCrop();
 buildChips();
 initControls();
 initActions();
+$("#appfoot").innerHTML = `Emojify <span>${APP_VERSION}</span>`;
 goTo("upload");

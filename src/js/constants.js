@@ -5,4 +5,7 @@
 export const EMOJI_FONT_STACK =
   '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';
 
+// Bump on each user-visible change so the on-screen footer tells which build is live.
+export const APP_VERSION = "v1.01";
+
 export const emojiFont = (px) => `${px}px ${EMOJI_FONT_STACK}`;
