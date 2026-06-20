@@ -1,0 +1,13 @@
+{
+  "name": "emojify",
+  "version": "1.0.0",
+  "description": "Turn a photo into an emoji mosaic, entirely in the browser.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "node serve.mjs src",
+    "build": "node build.mjs",
+    "preview": "node build.mjs && node serve.mjs dist"
+  },
+  "license": "MIT"
+}

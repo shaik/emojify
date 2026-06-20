@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#7C5CFC" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self'; font-src 'self'; script-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'" />
+  <title>Emojify — turn a photo into emoji art</title>
+  <meta name="description" content="Turn any photo into a mosaic of emojis, right in your browser. Crop, tune, and share." />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%23FFCB47'/%3E%3Cstop offset='.28' stop-color='%23FF5D5D'/%3E%3Cstop offset='.55' stop-color='%237C5CFC'/%3E%3Cstop offset='.78' stop-color='%233B9EFF'/%3E%3Cstop offset='1' stop-color='%2322C7A9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='9' fill='%23fcfcfd'/%3E%3Crect x='5' y='12' width='22' height='8' rx='4' fill='url(%23g)'/%3E%3C/svg%3E" />
+
+  <link rel="preload" href="fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body data-step="upload">
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__name">Emojify</span>
+    </div>
+    <button id="restart" class="ghost-btn" hidden>Start over</button>
+  </header>
+
+  <main class="stage">
+
+    <!-- STEP 1 — Upload -->
+    <section class="panel panel--upload" data-for="upload">
+      <h1 class="headline">Your face,<br /><span class="headline__pop">in emojis.</span></h1>
+      <p class="lede">Drop in a photo and watch it rebuild itself out of hundreds of tiny emojis. Everything happens on your phone — nothing is uploaded.</p>
+
+      <label class="dropzone" id="dropzone">
+        <input id="file-input" type="file" accept="image/*" hidden />
+        <span class="dropzone__icon" aria-hidden="true">📸</span>
+        <span class="dropzone__title">Tap to add a photo</span>
+        <span class="dropzone__hint">or drag one here · JPG, PNG, HEIC</span>
+      </label>
+
+      <ul class="featurerow">
+        <li><span aria-hidden="true">✂️</span> Crop it</li>
+        <li><span aria-hidden="true">🎛️</span> Tune it</li>
+        <li><span aria-hidden="true">📤</span> Share it</li>
+      </ul>
+    </section>
+
+    <!-- STEP 2 — Crop -->
+    <section class="panel panel--crop" data-for="crop" hidden>
+      <h2 class="step-title"><span class="step-num">01</span> Frame it</h2>
+      <div class="crop-frame" id="crop-frame">
+        <img id="crop-img" alt="Photo being cropped" />
+        <div class="crop-grid" aria-hidden="true"></div>
+      </div>
+
+      <div class="control">
+        <label for="zoom" class="control__label">Zoom</label>
+        <input id="zoom" type="range" min="1" max="8" step="0.01" value="1" />
+      </div>
+
+      <div class="seg" role="group" aria-label="Crop shape">
+        <button class="seg__btn is-active" data-aspect="1">Square</button>
+        <button class="seg__btn" data-aspect="0.8">Portrait</button>
+        <button class="seg__btn" data-aspect="1.5">Landscape</button>
+      </div>
+
+      <button id="to-studio" class="primary-btn">Emojify it →</button>
+    </section>
+
+    <!-- STEP 3 — Studio -->
+    <section class="panel panel--studio" data-for="studio" hidden>
+      <h2 class="step-title"><span class="step-num">02</span> Tune &amp; share</h2>
+
+      <div class="result" id="result">
+        <canvas id="mosaic-canvas"></canvas>
+        <div class="result__loading" id="result-loading">
+          <div class="spectrum-bar"><span id="spectrum-fill"></span></div>
+          <span class="result__loading-label">Matching emojis…</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <span class="stat"><span class="stat__num" id="stat-grid">—</span><span class="stat__lbl">grid</span></span>
+        <span class="stat"><span class="stat__num" id="stat-tiles">—</span><span class="stat__lbl">emojis</span></span>
+        <span class="stat"><span class="stat__num" id="stat-palette">—</span><span class="stat__lbl">in palette</span></span>
+      </div>
+
+      <div class="controls">
+        <div class="control">
+          <label for="density" class="control__label">Detail <span class="control__val" id="density-val"></span></label>
+          <input id="density" type="range" min="24" max="120" step="4" value="64" />
+        </div>
+
+        <div class="control">
+          <span class="control__label">Emoji set</span>
+          <div class="chips" id="palette-chips"></div>
+        </div>
+
+        <div class="toggle-row">
+          <label class="switch">
+            <input id="dither" type="checkbox" />
+            <span class="switch__track"><span class="switch__thumb"></span></span>
+            <span class="switch__label">Dithering <small>smoother gradients</small></span>
+          </label>
+        </div>
+
+        <div class="seg" role="group" aria-label="Background">
+          <span class="control__label control__label--inline">Background</span>
+          <button class="seg__btn is-active" data-bg="#ffffff">White</button>
+          <button class="seg__btn" data-bg="#18181B">Ink</button>
+          <button class="seg__btn" data-bg="transparent">None</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="share" class="primary-btn">Save / Share</button>
+        <button id="copy-text" class="ghost-btn">Copy as emoji text</button>
+      </div>
+    </section>
+  </main>
+
+  <p class="toast" id="toast" role="status" aria-live="polite" hidden></p>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
